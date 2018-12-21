@@ -1,0 +1,10 @@
+REDIS:
+cd /etc/init.d
+./redis_7001 start
+ZOOKEEPER:
+zkServer.sh start
+KAFKA:
+cd /usr/local/kafka
+nohup bin/kafka-server-start.sh config/server.properties &
+NGINX:
+/usr/servers/nginx/sbin/nginx

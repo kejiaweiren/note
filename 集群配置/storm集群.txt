@@ -1,0 +1,54 @@
+安装好JDK和python
+jdk version和python 命令去检查
+
+环境变量配置，参考下面的配，执行命令在/bin下
+配置zookeeper相关的环境变量
+vi /etc/profile
+JAVA_HOME=/usr/local/jdk1.7.0_79
+ZOOKEEPER_HOME=/usr/local/zk
+PATH=$PATH:$JAVA_HOME/bin:$ZOOKEEPER_HOME/bin
+export JAVA_HOME ZOOKEEPER_HOME PATH
+使环境变量即时生效，不然只能在下次重进此用户时生效：
+source /etc/profile
+
+mkdir /var/storm
+
+
+修改storm/conf/storm.yaml
+
+storm.zookeeper.servers:
+  - "192.168.0.108"
+  - "192.168.0.109"
+  - "192.168.0.111"
+
+storm.local.dir: "/var/storm"
+
+nimbus.seeds: ["192.168.0.108"]
+
+
+supervisor.slots.ports:
+    - 6700
+    - 6701
+    - 6702
+    - 6703
+
+
+注意-后面这里也要有空格的
+
+slots.port代表每个机器上可以启动多少个worker，一个端口号代表一个worker
+
+scp -r /usr/local/storm root@eshop-cache02:/usr/local/
+scp /etc/profile root@eshop-cache02:/etc/
+每个机器上mkdir /var/storm
+每个机器上source /etc/profile
+
+启动：
+一个节点，storm nimbus >/dev/null 2>&1 &
+三个节点，storm supervisor >/dev/null 2>&1 &
+一个节点，storm ui >/dev/null 2>&1 &
+需要在两个supervisor节点上启动logviewer,才能看到日志 storm logviewer >/dev/null 2>&1 &
+
+访问一下ui界面，8080端口  http://192.168.0.108:8080/
+
+杀掉topology
+storm kill 名字
